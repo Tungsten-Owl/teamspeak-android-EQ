@@ -1,0 +1,22 @@
+ts3j
+====
+
+This directory contains a vendored copy of ts3j:
+
+  https://github.com/Manevolent/ts3j
+  Copyright (C) Manevolent and contributors
+  Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Local modifications for the Android direct client:
+
+- `util/Ts3Crypt`: does not register the Bouncy Castle JCE provider; the
+  lightweight API is used directly and Android has its own `BC` provider.
+- `identity/LocalIdentity`: identity INI reading is a small built-in parser so
+  the Android app does not need ini4j (and its `java.beans` dependency).
+- `protocol/socket/client/LocalTeamspeakClientSocket`: listener dispatch is
+  safe after `close()`; the redundant command debug logging was removed.
+- `protocol/packet/handler/client/LocalClientHandlerFull`: a command that fails
+  is logged instead of terminating the network reader.
+- `protocol/socket/client/LocalTeamspeakClientSocket`: retains upstream's
+  `return_code` command parameter; the direct client does not rely on
+  `channellist`/`clientlist` for its directory.

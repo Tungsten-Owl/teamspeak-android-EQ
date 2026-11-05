@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ws_background">#0B1114</color>
+    <color name="ws_surface">#131B20</color>
+    <color name="ws_surface_high">#1B262C</color>
+    <color name="ws_accent">#2BB3A3</color>
+    <color name="ws_accent_dim">#1E7C72</color>
+    <color name="ws_text">#E8F1F2</color>
+    <color name="ws_text_muted">#93A6AB</color>
+    <color name="ws_danger">#EF6B6B</color>
+    <color name="ws_warning">#E7B75F</color>
+
+    <style name="AppTheme" parent="@android:style/Theme.Material">
+        <item name="android:colorAccent">@color/ws_accent</item>
+        <item name="android:windowBackground">@color/ws_background</item>
+        <item name="android:statusBarColor">@color/ws_background</item>
+        <item name="android:navigationBarColor">@color/ws_background</item>
+        <item name="android:textColorPrimary">@color/ws_text</item>
+        <item name="android:textColorSecondary">@color/ws_text_muted</item>
+        <item name="android:colorControlActivated">@color/ws_accent</item>
+    </style>
+
+    <style name="FieldLabel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/ws_text_muted</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="Field">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_field</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textColor">@color/ws_text</item>
+        <item name="android:textColorHint">#5E7075</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="PrimaryButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/bg_button_primary</item>
+        <item name="android:textColor">#04201C</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="SecondaryButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:background">@drawable/bg_button_secondary</item>
+        <item name="android:textColor">@color/ws_text</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+</resources>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ws_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/ws_text"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/main_subtitle"
+            android:textColor="@color/ws_text_muted"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/main_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_field"
+            android:padding="12dp"
+            android:text="@string/main_status_idle"
+            android:textColor="@color/ws_accent"
+            android:textSize="14sp" />
+
+        <ProgressBar
+            android:id="@+id/main_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginTop="6dp"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
+        <TextView style="@style/FieldLabel" android:text="@string/label_gateway" />
+        <EditText
+            android:id="@+id/main_gateway"
+            style="@style/Field"
+            android:hint="@string/hint_gateway"
+            android:inputType="textUri" />
+
+        <TextView style="@style/FieldLabel" android:text="@string/label_nickname" />
+        <EditText
+            android:id="@+id/main_nickname"
+            style="@style/Field"
+            android:hint="@string/hint_nickname"
+            android:inputType="text"
+            android:maxLength="30" />
+
+        <TextView style="@style/FieldLabel" android:text="@string/label_channel" />
+        <EditText
+            android:id="@+id/main_channel"
+            style="@style/Field"
+            android:hint="@string/hint_channel"
+            android:inputType="text"
+            android:maxLength="100" />
+
+        <TextView style="@style/FieldLabel" android:text="@string/label_target" />
+        <EditText
+            android:id="@+id/main_target"
+            style="@style/Field"
+            android:hint="@string/hint_target"
+            android:inputType="text" />
+
+        <TextView style="@style/FieldLabel" android:text="@string/label_server_password" />
+        <EditText
+            android:id="@+id/main_server_password"
+            style="@style/Field"
+            android:hint="@string/hint_server_password"
+            android:inputType="textPassword" />
+
+        <TextView style="@style/FieldLabel" android:text="@string/label_invite" />
+        <EditText
+            android:id="@+id/main_invite"
+            style="@style/Field"
+            android:hint="@string/hint_invite"
+            android:inputType="text" />
+
+        <TextView style="@style/FieldLabel" android:text="@string/label_identity" />
+        <EditText
+            android:id="@+id/main_identity"
+            style="@style/Field"
+            android:gravity="top"
+            android:hint="@string/hint_identity"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:singleLine="false" />
+
+        <CheckBox
+            android:id="@+id/main_remember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/remember_identity"
+            android:textColor="@color/ws_text"
+            android:textSize="14sp" />
+
+        <CheckBox
+            android:id="@+id/main_trust_self_signed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/trust_self_signed"
+            android:textColor="@color/ws_text"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/main_connect"
+            style="@style/PrimaryButton"
+            android:layout_marginTop="18dp"
+            android:text="@string/action_connect" />
+
+        <Button
+            android:id="@+id/main_probe"
+            style="@style/SecondaryButton"
+            android:layout_marginTop="10dp"
+            android:text="@string/action_probe" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:lineSpacingExtra="2dp"
+            android:text="@string/main_footer"
+            android:textColor="@color/ws_text_muted"
+            android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>

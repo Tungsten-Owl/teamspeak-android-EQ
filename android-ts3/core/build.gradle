@@ -1,0 +1,52 @@
+plugins {
+    id 'java-library'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    api project(':ts3j')
+    api 'io.github.jaredmdobson:concentus:1.0.2'
+}
+
+tasks.register('coreProbe', JavaExec) {
+    group = 'verification'
+    description = 'Runs the direct TS3 core against a server on 127.0.0.1:9987.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.webspeak.ts3.core.CoreProbe'
+}
+
+tasks.register('reconnectProbe', JavaExec) {
+    group = 'verification'
+    description = 'Connects, waits for a server outage, and checks watchdog reconnect.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.webspeak.ts3.core.ReconnectProbe'
+}
+
+tasks.register('avatarProbe', JavaExec) {
+    group = 'verification'
+    description = 'Downloads the avatar of a connected client named AvatarHost.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.webspeak.ts3.core.AvatarProbe'
+}
+
+tasks.register('disconnectProbe', JavaExec) {
+    group = 'verification'
+    description = 'Checks Leave latency and that the server removes the client.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.webspeak.ts3.core.DisconnectProbe'
+}
+
+tasks.register('directoryProbe', JavaExec) {
+    group = 'verification'
+    description = 'Checks channel membership and fast Leave -> Connect clone count.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.webspeak.ts3.core.DirectoryProbe'
+}

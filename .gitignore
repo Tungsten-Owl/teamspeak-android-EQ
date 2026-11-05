@@ -1,0 +1,99 @@
+node_modules/
+dist/
+web/dist/
+web/skin-wasm-interpreter/target/
+mobile/node_modules/
+web/android/.gradle/
+web/android/build/
+web/android/app/build/
+web/android/local.properties
+web/android/app/src/main/assets/public/
+web/android/app/src/main/assets/capacitor.config.json
+data/
+config.json
+*.log
+.env
+# Local deployment notes and downloaded artifacts.
+/release-artifacts/
+/webspeak-deploy*.tar.gz
+/webspeak-update*.tar.gz
+/teamspeak6-server-linux-amd64.tar.xz
+/.local-opus-hook.cjs
+/界面参考/stitch_teamspeak_web_interface.zip
+claude.pem
+
+# Private credentials and deployment notes stay local.
+.env.*
+!.env.example
+*.pem
+*.key
+/.claude/
+/LOCAL-RELEASE-RUNBOOK.md
+/DEPLOYMENT-*.md
+
+# ─────────────────────────────────────────────────────────────
+# teamspeak-android-EQ · 本仓库只收录 Android 客户端
+#
+# 这一段必须留在文件末尾：采用「先忽略根级全部、再白名单放行」
+# 的策略，使推送内容仅包含 android-ts3/ 与 android-native/。
+# WebSpeak 服务端、Web 前端、docs、调试频谱图等上游内容不入库。
+# ─────────────────────────────────────────────────────────────
+/*
+
+!.gitignore
+!README.md
+!LICENSE
+!android-ts3/
+!android-native/
+
+# Gradle / Android 构建产物
+.gradle/
+build/
+bin/
+out/
+.cxx/
+.externalNativeBuild/
+captures/
+dist/
+local.properties
+*.iml
+.idea/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+*.keystore
+*.jks
+*.hprof
+
+# Rust / NDK 构建产物（dfn/target 约 974 MB）
+target/
+*.rlib
+*.rmeta
+*.d
+*.o
+*.a
+*.so
+*.exe
+*.pdb
+
+# 预编译 native 库由本地 NDK 构建生成，不入库。
+# 注意：assets/models/*.onnx 是运行时模型权重，随仓库提供；
+# 各模型授权独立，再分发构建包前请核对 assets/models/README.md。
+
+# 二进制依赖库；gradle-wrapper.jar 必须保留，否则无法 ./gradlew
+*.jar
+!gradle-wrapper.jar
+
+# 本机配置、日志与密钥（绝不推送）
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.log
+config.json
+
+# android-ts3 原先是一个空的嵌套 git 仓库，其元数据在此备份
+.git.nested-backup/

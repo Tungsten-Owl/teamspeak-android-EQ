@@ -1,0 +1,18 @@
+[package]
+name = "ts3dfn"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "ts3dfn"
+crate-type = ["cdylib"]
+
+[dependencies]
+jni = { version = "0.21", default-features = false }
+ndarray = "0.17"
+deep-filter-rt = "0.1.1"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

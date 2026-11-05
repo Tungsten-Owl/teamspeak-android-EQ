@@ -1,0 +1,21 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "Ts3Native"
+include ':app', ':core', ':ts3j'
+
+// Native Android TeamSpeak 3 client: connects directly to a TeamSpeak 3
+// server over the voice protocol (UDP 9987), with no WebSpeak gateway.

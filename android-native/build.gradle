@@ -1,0 +1,11 @@
+// Native Android client for the WebSpeak voice gateway.
+// The application is written in plain Java against the Android framework only;
+// the protocol, socket and session layers have no Android dependencies so they
+// can be compiled and tested on a desktop JVM (see tools/verify-core.ps1).
+plugins {
+    id 'com.android.application' version '9.4.1' apply false
+}
+
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
+}

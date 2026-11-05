@@ -1,0 +1,89 @@
+plugins {
+    id 'com.android.application'
+}
+
+// The build number lives in version.properties and is incremented once per APK
+// build, so every packaged APK carries a new version without a manual edit.
+// versionName is derived (1.5.<build>), so there is only ever one number to keep.
+// Invocations that are not builds — IDE sync, clean, lint, test — never touch it.
+def buildNumber = 1011
+def versionFile = rootProject.file('version.properties')
+if (versionFile.exists()) {
+    def stored = new Properties()
+    versionFile.withInputStream { stored.load(it) }
+    buildNumber = (stored.getProperty('build') ?: '1011').toInteger()
+}
+def requestedTasks = gradle.startParameter.taskNames.collect { it.toLowerCase() }
+def buildingApk = requestedTasks.any {
+    it.contains('assemble') || it == 'build' || it.endsWith(':build')
+}
+if (buildingApk) {
+    buildNumber = buildNumber + 1
+    def updated = new Properties()
+    updated.setProperty('build', buildNumber.toString())
+    versionFile.parentFile.mkdirs()
+    versionFile.withWriter { updated.store(it, 'Auto-incremented on every APK build.') }
+}
+
+android {
+    namespace 'com.webspeak.ts3'
+    compileSdk 37
+    ndkVersion "30.0.16248370"
+
+    defaultConfig {
+        applicationId "com.webspeak.ts3"
+        minSdk 26
+        targetSdk 35
+        versionCode buildNumber
+        versionName "1.5.$buildNumber"
+        multiDexEnabled true
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64'
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    packaging {
+        resources {
+            excludes += [
+                    'META-INF/versions/**',
+                    'META-INF/*.SF',
+                    'META-INF/*.DSA',
+                    'META-INF/*.RSA',
+                    'META-INF/LICENSE*',
+                    'META-INF/NOTICE*'
+            ]
+        }
+    }
+
+    lint {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation project(':core')
+    implementation project(':ts3j')
+    // ONNX Runtime for the MIT lightweight-denoise-48k model. Pure Java API: the
+    // AAR brings its own JNI libraries, so no NDK target is needed here. The
+    // model file itself is not committed; see src/main/assets/models/README.md.
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.19.2")
+}

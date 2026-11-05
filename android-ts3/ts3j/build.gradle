@@ -1,0 +1,22 @@
+plugins {
+    id 'java-library'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 8
+    options.compilerArgs << '-Xlint:-options'
+}
+
+dependencies {
+    // ts3j's identity, ECDSA and EAX implementation uses the Bouncy Castle
+    // lightweight API. The provider is not registered on Android.
+    api 'org.bouncycastle:bcprov-jdk15on:1.67'
+    implementation 'commons-lang:commons-lang:2.6'
+    implementation 'dnsjava:dnsjava:2.1.8'
+}

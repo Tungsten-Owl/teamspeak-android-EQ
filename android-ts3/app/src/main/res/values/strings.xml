@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ts3移动端</string>
+    <string name="random_nickname">用户%1$d</string>
+    <string name="channel">默认频道（可选）</string>
+    <string name="channel_locked">已加密</string>
+    <string name="channel_target">频道</string>
+    <string name="channels">频道</string>
+    <string name="chat">聊天</string>
+    <string name="chat_private">[私聊]</string>
+    <string name="chat_server">[服务器]</string>
+    <string name="chat_you">我</string>
+    <string name="chinese">中文</string>
+    <string name="client_fallback">用户 %1$d</string>
+    <string name="connect">连接</string>
+    <string name="connected_status">已连接</string>
+    <string name="connecting_relay_status">正在通过中继 %1$s 连接 %2$s:%3$d…</string>
+    <string name="connecting_status">正在连接 %1$s:%2$d…</string>
+    <string name="connection_failed_status">连接失败：%1$s</string>
+    <string name="english">English</string>
+    <string name="enter_host">请输入服务器地址。</string>
+    <string name="events">事件</string>
+    <string name="generating_identity">正在生成安全等级 8 的身份…</string>
+    <string name="host">服务器地址</string>
+    <string name="identity">身份（可选，粘贴 TS3 identity）</string>
+    <string name="identity_failed">身份生成失败：%1$s</string>
+    <string name="identity_generated">身份已生成，连接时会保存。</string>
+    <string name="joined_channel">已加入 %1$s</string>
+    <string name="language">语言</string>
+    <string name="leave">退出</string>
+    <string name="main_subtitle">TeamSpeak 3 安卓客户端</string>
+    <string name="main_title">ts3移动端</string>
+    <string name="member_away">离开</string>
+    <string name="member_online">在线</string>
+    <string name="member_self">（我）</string>
+    <string name="members">成员</string>
+    <string name="mic_intro_enable">开启麦克风</string>
+    <string name="mic_intro_later">稍后</string>
+    <string name="mic_intro_message">为了保护隐私，进入频道时麦克风默认关闭。需要发言时再开启麦克风。</string>
+    <string name="mic_intro_title">麦克风默认关闭</string>
+    <string name="mic_off">麦克风关</string>
+    <string name="mic_on">麦克风开</string>
+    <string name="microphone_required">语音需要麦克风权限</string>
+    <string name="new_identity">新建身份</string>
+    <string name="nickname">昵称</string>
+    <string name="noise_suppression">启用 AI 降噪（总开关）</string>
+    <string name="port">端口</string>
+    <string name="private_target">私聊</string>
+    <string name="privilege_key">权限密钥（可选）</string>
+    <string name="reconnecting">正在重连…</string>
+    <string name="relay_host">UDP 中继地址（可选兜底）</string>
+    <string name="relay_port">中继端口</string>
+    <string name="relay_token">中继令牌</string>
+    <string name="room_status">%1$s · %2$s · %3$d 个频道 · %4$d 位成员 · 客户端 %5$d</string>
+    <string name="room_title">ts3移动端</string>
+    <string name="send">发送</string>
+    <string name="server_password">服务器密码（可选）</string>
+    <string name="server_target">服务器</string>
+    <string name="settings">设置</string>
+    <string name="settings_volume">播放音量</string>
+    <string name="event_sounds">成员进出提示音</string>
+    <string name="event_sound_volume">提示音音量：%1$d%%</string>
+    <string name="spacer_channel">这是频道分隔标签，不能加入</string>
+    <string name="speaker_off">已静音</string>
+    <string name="speaker_on">声音开</string>
+    <string name="use_earpiece">使用听筒（关闭则用扬声器）</string>
+    <string name="voice_optimization">人声优化（清晰度增强）</string>
+    <string name="rnnoise_strength">RNNoise 强度：%1$d%%</string>
+    <string name="mic_gain">麦克风音量：%1$d%%</string>
+    <string name="mic_eq">麦克风 EQ（实时生效）</string>
+    <string name="mic_eq_low">低频 200 Hz：%1$d dB</string>
+    <string name="mic_eq_mid">中频 1 kHz：%1$d dB</string>
+    <string name="mic_eq_high">高频 4 kHz：%1$d dB</string>
+    <string name="rnnoise_gate">噪声门限：%1$d%%</string>
+    <string name="denoise_model">AI 降噪模型</string>
+    <string name="model_rnnoise">RNNoise（轻量，默认）</string>
+    <string name="model_deepfilter">DeepFilterNet3（高质量）</string>
+    <string name="model_unavailable">DeepFilterNet3（当前设备不支持）</string>
+    <string name="model_purevox">轻量 AI 降噪（lightweight-denoise-48k）</string>
+    <string name="model_purevox_missing">轻量 AI 降噪（模型未安装）</string>
+    <string name="model_dfsmn">DFSMN 降噪（48 kHz 因果，阿里）</string>
+    <string name="model_dfsmn_missing">DFSMN 降噪（模型未安装）</string>
+    <string name="dfn_attenuation">DeepFilterNet3 最大衰减：%1$d dB</string>
+    <string name="dfn_postfilter">DeepFilterNet3 后置滤波：%1$d%%</string>
+    <string name="qq_voice_mode">QQ 风格语音（8 kHz 窄带，无自动增益）</string>
+    <string name="raw_microphone">原声（关闭全部麦克风处理）</string>
+
+    <string name="about">关于</string>
+    <string name="about_back">返回</string>
+    <string name="about_hint">←　向左滑动，开始连接</string>
+    <string name="about_body"><![CDATA[
+<b>ts3移动端</b>　版本 %1$s<br/><br/>
+本软件基于 <a href="https://github.com/EchoSixHIYA/WebSpeak-client-for-TeamSpeak">WebSpeak</a> 项目的代码修改而来，仓库与部分设计同源；本客户端是原生 Android 实现，直连 TeamSpeak 服务器。<br/><br/>
+<b>本软件未获得 TeamSpeak 官方授权</b>，与原项目及其作者没有隶属或代理关系，也不代表原项目的立场。需要官方支持时，请使用原项目发布的版本。<br/><br/>
+<b>感谢协助人员</b><br/>
+<a href="https://github.com/lishang999">github.com/lishang999</a><br/>
+<a href="https://github.com/akatsuki-misaki">github.com/akatsuki-misaki</a><br/>
+<a href="https://github.com/Tungsten-Owl">github.com/Tungsten-Owl</a><br/>
+<a href="https://github.com/hyb-oyqq">github.com/hyb-oyqq</a><br/><br/>
+<b>特别鸣谢</b><br/>
+<a href="https://space.bilibili.com/38556474">space.bilibili.com/38556474</a><br/>
+<a href="https://space.bilibili.com/38958171">space.bilibili.com/38958171</a><br/><br/>
+<b>项目鸣谢</b><br/>
+<a href="https://github.com/HoneyBBQ/teamspeak-js">HoneyBBQ/teamspeak-js</a><br/>
+<a href="https://github.com/EchoSixHIYA/WebSpeak-client-for-TeamSpeak">EchoSixHIYA/WebSpeak-client-for-TeamSpeak</a><br/><br/>
+内置 AI 降噪模型来自各自的开源项目，授权随模型文件，详见项目内的模型说明。
+]]></string>
+</resources>

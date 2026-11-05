@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WebSpeak</string>
+    <string name="main_subtitle">原生 Java 安卓客户端 · 通过 WebSpeak 网关连接 TeamSpeak</string>
+    <string name="main_status_idle">尚未连接</string>
+    <string name="label_gateway">网关地址 *</string>
+    <string name="hint_gateway">例如 https://voice.example.com 或 http://192.168.1.10:3040</string>
+    <string name="label_nickname">昵称 *</string>
+    <string name="hint_nickname">在 TeamSpeak 服务器上显示的名字（3–30 个字符）</string>
+    <string name="label_channel">频道名（可选）</string>
+    <string name="hint_channel">加入后自动进入的频道名</string>
+    <string name="label_target">TeamSpeak 地址（可选）</string>
+    <string name="hint_target">仅网关为开放模式时需要，例如 ts.example.com:9987</string>
+    <string name="label_server_password">服务器密码（可选）</string>
+    <string name="hint_server_password">TeamSpeak 服务器密码</string>
+    <string name="label_invite">邀请码（可选）</string>
+    <string name="hint_invite">管理员生成的邀请链接中的票据</string>
+    <string name="label_identity">TeamSpeak 身份（可选）</string>
+    <string name="hint_identity">粘贴从网页客户端导出的身份字符串，可保持同一身份</string>
+    <string name="remember_identity">保持身份（复用上面的身份字符串）</string>
+    <string name="trust_self_signed">信任自签名证书（不安全，仅用于自建网关）</string>
+    <string name="action_connect">连接网关</string>
+    <string name="action_probe">读取网关信息</string>
+    <string name="main_footer">连接流程与网页客户端一致：先向网关申请一次性会话票据（/api/join-ticket），再通过 /ws/voice 建立语音通道。麦克风以 48 kHz 单声道 20 ms PCM 帧上传，其他成员的 Opus 音频在本地解码并混音。此客户端不支持屏幕共享与 WebRTC 传输。</string>
+
+    <string name="room_title_default">语音房间</string>
+    <string name="mic_on">麦克风</string>
+    <string name="mic_muted">已静音</string>
+    <string name="action_disconnect">断开</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_send">发送</string>
+    <string name="hint_message">输入消息…</string>
+    <string name="tab_channels">频道</string>
+    <string name="tab_members">成员</string>
+    <string name="tab_chat">聊天</string>
+    <string name="tab_events">事件</string>
+</resources>
