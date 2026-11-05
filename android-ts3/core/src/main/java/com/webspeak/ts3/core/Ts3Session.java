@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -157,6 +158,13 @@ public final class Ts3Session {
     private final ScheduledExecutorService watchdogExecutor =
             Executors.newSingleThreadScheduledExecutor(runnable -> {
                 Thread thread = new Thread(runnable, "ts3-watchdog");
+                thread.setDaemon(true);
+                return thread;
+            });
+    /** Serialises per-client detail queries so a join burst cannot flood the socket. */
+    private final ExecutorService memberInfoExecutor =
+            Executors.newSingleThreadExecutor(runnable -> {
+                Thread thread = new Thread(runnable, "ts3-memberinfo");
                 thread.setDaemon(true);
                 return thread;
             });
@@ -676,6 +684,50 @@ public final class Ts3Session {
         requireClient().clientPoke(clientId, message);
     }
 
+    /**
+     * Posts a line to the session event log.
+     *
+     * <p>The app layer uses this for diagnostics that would otherwise only be
+     * visible in logcat, which is not reachable when the device is the only
+     * thing running the build.
+     */
+    public void postDiagnostic(int level, String text) {
+        postEvent(level, text);
+    }
+
+    /**
+     * Fetches one client's details when a notification left something out.
+     *
+     * <p>{@code cliententerview} rows routinely omit {@code client_flag_avatar},
+     * and the one-off sweep after the first clientlist only covers clients that
+     * already existed at that moment. Anyone who joined later therefore kept the
+     * initials avatar for the whole session, even though a clientinfo query
+     * would have returned the marker.
+     */
+    private void refreshMemberAvatar(int clientId, LocalTeamspeakClientSocket socket) {
+        memberInfoExecutor.execute(() -> {
+            if (client != socket) return;
+            try {
+                Client info = socket.getClientInfo(clientId);
+                if (info == null) return;
+                boolean changed = false;
+                synchronized (lock) {
+                    MemberInfo member = members.get(clientId);
+                    if (member == null) return;
+                    String beforeKey = member.avatarKey == null ? "" : member.avatarKey;
+                    String beforeUid = member.uniqueId == null ? "" : member.uniqueId;
+                    memberOf(info.getMap(), member);
+                    changed = !beforeKey.equals(member.avatarKey == null ? "" : member.avatarKey)
+                            || !beforeUid.equals(member.uniqueId == null ? "" : member.uniqueId);
+                }
+                if (changed) notifyDirectory();
+            } catch (Throwable error) {
+                postEvent(SessionEvent.WARNING, "Client info for " + clientId
+                        + " unavailable: " + describe(error));
+            }
+        });
+    }
+
     public int currentChannelId() {
         synchronized (lock) {
             MemberInfo self = members.get(selfId);
@@ -1036,6 +1088,11 @@ public final class Ts3Session {
             }
             dedupeSelf();
             notifyDirectory();
+            // A newcomer's cliententerview usually carries no avatar marker. The
+            // welcome sweep has already run by now, so ask for this client alone.
+            if (liveMembers && (member.avatarKey == null || member.avatarKey.isEmpty())) {
+                refreshMemberAvatar(id, source);
+            }
             int myChannel = currentChannelId();
             if (liveMembers && !known && id != selfId && myChannel > 0
                     && member.channelId == myChannel) {
