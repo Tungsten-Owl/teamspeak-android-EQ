@@ -65,6 +65,17 @@ public final class Ts3Session {
         AbstractTeamspeakClientSocket.TIMEOUT = 6_000L;
     }
 
+    /**
+     * Delay after a file transfer socket closes, before the next
+     * {@code ftinitdownload} may be issued.
+     *
+     * <p>The server releases its single transfer slot when it observes the
+     * socket close, not when the last byte leaves the client. Firing the next
+     * request straight away makes it answer "already in progress", so a batch
+     * of avatar downloads used to yield exactly one image.
+     */
+    private static final long TRANSFER_SETTLE_MS = 250L;
+
     public enum State {
         DISCONNECTED,
         CONNECTING,
@@ -638,19 +649,27 @@ public final class Ts3Session {
         }
         if (port < 1 || port > 65535) return null;
 
+        byte[] data;
         try (Socket transfer = new Socket()) {
             transfer.connect(new InetSocketAddress(host, port), 8_000);
             transfer.setSoTimeout(10_000);
             OutputStream output = transfer.getOutputStream();
             output.write(key.getBytes(StandardCharsets.US_ASCII));
             output.flush();
-            byte[] data = new byte[(int) size];
+            data = new byte[(int) size];
             DataInputStream input = new DataInputStream(transfer.getInputStream());
             input.readFully(data);
-            return data;
         } catch (IOException error) {
             return null;
         }
+        // Wait for the server to retire this transfer before the caller asks for
+        // the next one; see TRANSFER_SETTLE_MS.
+        try {
+            Thread.sleep(TRANSFER_SETTLE_MS);
+        } catch (InterruptedException interrupted) {
+            Thread.currentThread().interrupt();
+        }
+        return data;
     }
 
     public void poke(int clientId, String message) throws Exception {

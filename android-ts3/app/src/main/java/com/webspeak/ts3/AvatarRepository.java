@@ -11,6 +11,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.webspeak.ts3.core.AvatarFileName;
 import com.webspeak.ts3.core.ChatMessage;
@@ -35,7 +36,10 @@ final class AvatarRepository {
         Bitmap avatarFor(ChatMessage message);
     }
 
+    private static final String TAG = "AvatarRepository";
     private static final int MAX_BYTES = 256 * 1024;
+    /** Attempts per member before the initials avatar is kept for good. */
+    private static final int MAX_ATTEMPTS = 3;
     private final Context context;
     private final Ts3Session session;
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -46,7 +50,9 @@ final class AvatarRepository {
     });
     private final Map<String, Bitmap> images = new ConcurrentHashMap<>();
     private final Set<String> loading = ConcurrentHashMap.newKeySet();
-    private final Set<String> attempted = ConcurrentHashMap.newKeySet();
+    private final Map<String, Integer> failures = new ConcurrentHashMap<>();
+    /** Members already reported as having no avatar marker, to keep the log quiet. */
+    private final Set<String> reported = ConcurrentHashMap.newKeySet();
     private volatile Runnable onLoaded;
 
     AvatarRepository(Context context, Ts3Session session) {
@@ -85,23 +91,49 @@ final class AvatarRepository {
         // missing file poison the sequential transfer queue.
         boolean canDownload = hasAvatarMarker
                 && !AvatarFileName.forMember(member).isEmpty();
-        if (canDownload && attempted.add(cacheKey) && loading.add(cacheKey)) {
+        if (!canDownload && reported.add(cacheKey)) {
+            // Distinguishes "the server never told us about this avatar" from
+            // "the transfer failed": the first one is a permissions problem and
+            // cannot be fixed here.
+            Log.d(TAG, "no avatar marker for " + name + " (uniqueId "
+                    + (finalUid.isEmpty() ? "missing" : "present") + ")");
+        }
+        int attempts = failures.getOrDefault(cacheKey, 0);
+        // A single refused or timed-out transfer used to be final: that member
+        // then showed initials for the rest of the session while the first one
+        // in the batch kept its picture. Retry a few times instead, spaced by a
+        // redraw so the row asks again.
+        if (canDownload && attempts < MAX_ATTEMPTS && loading.add(cacheKey)) {
             final MemberInfo target = member;
             final String targetName = name;
+            final int attempt = attempts + 1;
             executor.execute(() -> {
                 Bitmap bitmap = null;
                 try {
-                    byte[] data = session.downloadAvatar(target);
-                    bitmap = decode(data);
-                } catch (Throwable ignored) {
+                    bitmap = decode(session.downloadAvatar(target));
+                } catch (Throwable error) {
+                    Log.w(TAG, "avatar download threw for " + targetName, error);
                 }
-                final Bitmap result = bitmap == null
-                        ? fallback(finalUid, targetName) : circle(bitmap);
+                final Bitmap result = bitmap == null ? null : circle(bitmap);
                 main.post(() -> {
-                    images.put(cacheKey, result);
                     loading.remove(cacheKey);
-                    Runnable callback = onLoaded;
-                    if (callback != null) callback.run();
+                    if (result != null) {
+                        images.put(cacheKey, result);
+                        failures.remove(cacheKey);
+                        Log.d(TAG, "avatar ready for " + targetName);
+                        Runnable callback = onLoaded;
+                        if (callback != null) callback.run();
+                        return;
+                    }
+                    failures.put(cacheKey, attempt);
+                    Log.w(TAG, "avatar failed for " + targetName
+                            + " (attempt " + attempt + "/" + MAX_ATTEMPTS + ")");
+                    if (attempt < MAX_ATTEMPTS) {
+                        main.postDelayed(() -> {
+                            Runnable callback = onLoaded;
+                            if (callback != null) callback.run();
+                        }, 1_200L);
+                    }
                 });
             });
         }
