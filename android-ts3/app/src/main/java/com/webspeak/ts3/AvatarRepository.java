@@ -86,33 +86,34 @@ final class AvatarRepository {
         if (cached != null) return cached;
 
         boolean hasAvatarMarker = member != null
-                && member.avatarKey != null && !member.avatarKey.isEmpty();
-        // client_flag_avatar is the authoritative "this client has an avatar"
-        // marker. Trying ftinitdownload for members without it makes the first
-        // missing file poison the sequential transfer queue.
-        boolean canDownload = hasAvatarMarker
-                && !AvatarFileName.forMember(member).isEmpty();
-        if (!canDownload && reported.add(cacheKey)) {
-            // Distinguishes "the server never told us about this avatar" from
-            // "the transfer failed": the first one is a permissions problem and
-            // cannot be fixed here. Reported on the events tab as well, because
-            // a phone with no adb is the usual way this build gets tested.
-            String reason = finalUid.isEmpty()
-                    ? "无头像标记且无 UID，可能需要 b_client_info_view 权限"
-                    : "服务器未下发头像标记";
-            Log.d(TAG, "no avatar marker for " + name + " (uniqueId "
-                    + (finalUid.isEmpty() ? "missing" : "present") + ")");
-            session.postDiagnostic(SessionEvent.INFO, "头像缺失：" + name + "（" + reason + "）");
-        }
+                && member.avatarKey != null && !member.avatarKey.isEmpty()
+                // TS6 may answer with the boolean form of the property instead of
+                // a file name, where 0 means "no avatar".
+                && !"0".equals(member.avatarKey);
+        // The file name is derivable from the UID alone (avatar_ plus the a-p
+        // nibble encoding), and TS6 servers do not send client_flag_avatar at
+        // all. Requiring that marker is what left every TS6 member on initials
+        // while the desktop client showed pictures.
+        String fileName = member == null ? "" : AvatarFileName.forMember(member);
+        boolean canDownload = !fileName.isEmpty();
+        // Without a marker the file may simply not exist, so probe once instead of
+        // retrying a request the server will never satisfy.
+        int maxAttempts = hasAvatarMarker ? MAX_ATTEMPTS : 1;
         int attempts = failures.getOrDefault(cacheKey, 0);
+        if (!canDownload && reported.add(cacheKey)) {
+            Log.d(TAG, "no avatar target for " + name + " (no UID, no marker)");
+            session.postDiagnostic(SessionEvent.INFO,
+                    "头像缺失：" + name + "（无 UID，无法定位头像文件）");
+        }
         // A single refused or timed-out transfer used to be final: that member
         // then showed initials for the rest of the session while the first one
         // in the batch kept its picture. Retry a few times instead, spaced by a
         // redraw so the row asks again.
-        if (canDownload && attempts < MAX_ATTEMPTS && loading.add(cacheKey)) {
+        if (canDownload && attempts < maxAttempts && loading.add(cacheKey)) {
             final MemberInfo target = member;
             final String targetName = name;
             final int attempt = attempts + 1;
+            final int limit = maxAttempts;
             executor.execute(() -> {
                 Bitmap bitmap = null;
                 try {
@@ -133,12 +134,11 @@ final class AvatarRepository {
                     }
                     failures.put(cacheKey, attempt);
                     Log.w(TAG, "avatar failed for " + targetName
-                            + " (attempt " + attempt + "/" + MAX_ATTEMPTS + ")");
+                            + " (attempt " + attempt + "/" + limit + ")");
                     session.postDiagnostic(SessionEvent.WARNING,
-                            "头像下载失败：" + targetName + "（第 " + attempt + "/"
-                                    + MAX_ATTEMPTS + " 次"
-                                    + (attempt < MAX_ATTEMPTS ? "，将重试）" : "，已放弃）"));
-                    if (attempt < MAX_ATTEMPTS) {
+                            "头像下载失败：" + targetName + "（第 " + attempt + "/" + limit + " 次"
+                                    + (attempt < limit ? "，将重试）" : "，已放弃）"));
+                    if (attempt < limit) {
                         main.postDelayed(() -> {
                             Runnable callback = onLoaded;
                             if (callback != null) callback.run();

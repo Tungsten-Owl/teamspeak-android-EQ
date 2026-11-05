@@ -928,14 +928,24 @@ public final class Ts3Session {
             snapshot = new ArrayList<>(members.values());
         }
         boolean changed = false;
+        boolean fieldsReported = false;
         for (MemberInfo existing : snapshot) {
             if (generation != connectionGeneration.get() || this.client != socket) return;
             if (existing.avatarKey != null && !existing.avatarKey.isEmpty()) continue;
             try {
                 Client info = socket.getClientInfo(existing.id);
                 if (info == null) continue;
+                Map<String, String> map = info.getMap();
+                // TS6 servers answer without client_flag_avatar. Report what they
+                // do send once, so the events tab shows whether there is another
+                // field to read instead of guessing.
+                if (!fieldsReported && !map.containsKey("client_flag_avatar")) {
+                    fieldsReported = true;
+                    postEvent(SessionEvent.INFO, "clientinfo 无 client_flag_avatar，"
+                            + describeAvatarFields(map));
+                }
                 synchronized (lock) {
-                    MemberInfo member = memberOf(info.getMap(), members.get(existing.id));
+                    MemberInfo member = memberOf(map, members.get(existing.id));
                     member.id = existing.id;
                     members.put(existing.id, member);
                 }
@@ -945,6 +955,22 @@ public final class Ts3Session {
             }
         }
         if (changed) notifyDirectory();
+    }
+
+    /** Summarises the avatar-ish fields a server exposes, for the events tab. */
+    private static String describeAvatarFields(Map<String, String> map) {
+        StringBuilder fields = new StringBuilder();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            String key = entry.getKey();
+            if (key.contains("avatar") || key.contains("icon")
+                    || key.contains("myteamspeak") || key.contains("badge")) {
+                if (fields.length() > 0) fields.append(", ");
+                fields.append(key).append('=').append(entry.getValue());
+            }
+        }
+        return fields.length() == 0
+                ? "且无 avatar/icon/badge 字段（头像可能只存在于 myTeamSpeak 云端）"
+                : "相关字段：" + fields;
     }
 
     private void addChat(ChatMessage message) {
